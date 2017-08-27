@@ -1,0 +1,8 @@
+package: github.com/oinume/grpc-gateway-on-heroku
+import:
+- package: github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+  version: 1.2.2
+- package: github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+  version: 1.2.2
+- package: github.com/grpc-ecosystem/grpc-gateway/protoc-gen-go
+  version: 1.2.2

@@ -1,0 +1,10 @@
+hash: e05c48422e1b0c7acaeefa721f1fb9230c6d74a0877a9b3a134f9bdecb67f434
+updated: 2017-08-28T06:38:55.157723904+09:00
+imports:
+- name: github.com/grpc-ecosystem/grpc-gateway
+  version: 589b126116b5fc961939b3e156c29e4d9d58222f
+  subpackages:
+  - protoc-gen-go
+  - protoc-gen-grpc-gateway
+  - protoc-gen-swagger
+testImports: []

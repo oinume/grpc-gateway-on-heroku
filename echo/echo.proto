@@ -8,10 +8,19 @@ message StringMessage {
     string value = 1;
 }
 
-service Echo {
+service EchoV1 {
     rpc Echo(StringMessage) returns (StringMessage) {
        option (google.api.http) = {
           post: "/v1/echo"
+          body: "*"
+       };
+    }
+}
+
+service EchoV2 {
+    rpc Echo(StringMessage) returns (StringMessage) {
+        option (google.api.http) = {
+          post: "/v2/echo"
           body: "*"
        };
     }

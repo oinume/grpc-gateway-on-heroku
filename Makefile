@@ -19,14 +19,12 @@ proto/go:
 	rm -rf gen/go && mkdir -p gen/go
 	protoc -I/usr/local/include -I. \
   		-I$(GOPATH)/src \
-  		-Ivendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+  		-I$(VENDOR_DIR)/$(GRPC_GATEWAY_REPO) \
   		--go_out=plugins=grpc:gen/go \
   		echo/echo.proto
 
 proto/gateway:
 	#rm -rf gen/go && mkdir -p gen/go
-	protoc -I/usr/local/include -I. \
-		-I$(GOPATH)/src \
-		-Ivendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+	protoc -I/usr/local/include -I. -I$(GOPATH)/src -I$(VENDOR_DIR)/$(GRPC_GATEWAY_REPO) \
 		--grpc-gateway_out=logtostderr=true:gen/go \
 		echo/echo.proto

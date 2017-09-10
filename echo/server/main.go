@@ -1,11 +1,15 @@
 package main
 
+// curl -X POST -d '{"value":"hoge"}' http://localhost:50052/echo
+
 import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"os"
 
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/oinume/grpc-gateway-on-heroku/gen/go/echo"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -36,6 +40,35 @@ func startGRPCServer(port string) error {
 	return s.Serve(lis)
 }
 
+func startGatewayServer(grpcPort, port string) error {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	gatewayMux := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithInsecure()}
+	if err := echo.RegisterEchoHandlerFromEndpoint(ctx, gatewayMux, "127.0.0.1:"+grpcPort, opts); err != nil {
+		return err
+	}
+
+	//mux := http.NewServeMux()
+	//mux.Handle("/v1/", gatewayMux)
+	//mux.Handle("/", http.FileServer(http.Dir("swagger-ui")))
+
+	fmt.Println("Starting gateway server on " + port)
+	return http.ListenAndServe(":"+port, gatewayMux)
+}
+
+//func cors(next http.Handler) http.Handler {
+//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		Set(w, AccessControl{
+//			Origin:         "*",
+//			AllowedMethods: []string{"GET", "HEAD", "OPTIONS", "POST", "PUT", "DELETE", "PATCH"},
+//		})
+//		next.ServeHTTP(w, r)
+//	})
+//}
+
 func main() {
 	grpcPort := os.Getenv("GPRC_PORT")
 	gatewayPort := os.Getenv("PORT")
@@ -49,7 +82,16 @@ func main() {
 		log.Fatalf("Can't specify same port.")
 	}
 
-	if err := startGRPCServer(grpcPort); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+	errors := make(chan error)
+	go func() {
+		errors <- startGRPCServer(grpcPort)
+	}()
+
+	go func() {
+		errors <- startGatewayServer(grpcPort, gatewayPort)
+	}()
+
+	for err := range errors {
+		log.Fatal(err)
 	}
 }

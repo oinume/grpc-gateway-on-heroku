@@ -14,7 +14,7 @@ install-dep:
 install-commands:
 	go install ./vendor/github.com/golang/protobuf/protoc-gen-go
 	go install ./vendor/github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-	go install ./vendor/github.com/lileio/lile
+#	go install ./vendor/github.com/lileio/lile
 
 proto/go:
 	rm -rf gen/go && mkdir -p gen/go

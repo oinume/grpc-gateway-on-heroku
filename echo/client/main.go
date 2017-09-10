@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -21,7 +22,7 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := echo.NewEchoServiceClient(conn)
+	c := echo.NewEchoClient(conn)
 
 	// Contact the server and print out its response.
 	message := defaultMessage
@@ -32,5 +33,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not echo: %v", err)
 	}
-	log.Printf("Echo: %s", r.Value)
+	fmt.Printf("%s\n", r.Value)
 }
